@@ -91,6 +91,12 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+    
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.3</version>
+      </dependency>
     </dependencies>
 
     <!-- 5. Configuració de la Construcció (Build) -->
