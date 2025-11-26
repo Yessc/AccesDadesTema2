@@ -16,6 +16,7 @@ import java.sql.Statement;
 public class PR210Honor {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private int option;
 
     public static void main(String[] args) {
         System.out.println("PR210 Honor funciona correctament.");
@@ -27,6 +28,18 @@ public class PR210Honor {
             if (!fDataBase.exists()) {
                 initDatabase(filePath);
             }
+            while (op) { 
+                switch (option) {
+                    case option=1:
+                        
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
+                
+            }
+
+    
 
         } catch (Exception e) {
         }
@@ -73,6 +86,7 @@ public class PR210Honor {
             UtilsSQLite.queryUpdate(conn,"INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Kensei\",  3, 2, 3);");
             UtilsSQLite.queryUpdate(conn,"INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Shugoki\", 2, 1, 3);");
             UtilsSQLite.queryUpdate(conn, "INSERT INTO Personatge (nom, atac, defensa, idFaccio) VALUES (\"Orochi\",  3, 2, 3);");
+            
 
             logger.info("Dades inicials inserides correctament.");
         } catch (SQLException e) {

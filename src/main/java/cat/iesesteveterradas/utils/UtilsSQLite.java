@@ -103,6 +103,39 @@ public class UtilsSQLite {
 
         
     }
+
+    public static void showBestAtacant(Connection conn){
+        String query= "Select p.nom, p.atac ,f.nom from Persotge p join Faccio f on  p.idfaccio = f.id where  p.atac= (select max(atac) from Personatge);";
+
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                System.out.println("Nom: " + rs.getString("nom") + ", Atac: "
+                        + rs.getDouble("atac") + ", Faccio: " + rs.getString("nom"));
+            }
+        } catch (SQLException e) {
+            logger.error("Error al mostrar los datos: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void showBestDefense(Connection conn){
+       String query= "Select p.nom, p.atac ,f.nom from Persotge p join Faccio f on  p.idfaccio = f.id where  p.atac= (select max(defensa) from Personatge);";
+       try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                System.out.println("Nom: " + rs.getString("nom") + ", Defensa: "
+                        + rs.getDouble("defensa") + ", Faccio: " + rs.getString("nom"));
+            }
+        } catch (SQLException e) {
+            logger.error("Error al mostrar los datos: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
         
     
     
