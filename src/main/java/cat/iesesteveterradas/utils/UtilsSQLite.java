@@ -72,12 +72,14 @@ public class UtilsSQLite {
                 ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
+                
                 if (opcio == 1) {
-                    System.out.println("ID: " + rs.getInt("id") + ", Nom: " + rs.getString("nom") + ", Resum: "
-                            + rs.getString("resum"));
+                       
+                    System.out.printf("%-7s %-20s %-30s%n", "Id:" + rs.getInt("id"), "Faccio:" + rs.getString("nom"),
+                            "Resum:" + rs.getString("resum"));
                 } else {
-                    System.out.println("ID: " + rs.getInt("id") + ", Nom: " + rs.getString("nom") + ", Atac: "
-                            + rs.getDouble("atac") + ", Defensa: " + rs.getDouble("defensa"));
+                    
+                    System.out.printf("%-10s %-25s %-15s %-15s%n","Id: "+rs.getString("id") , "Personatge: "+ rs.getString("nom") , "Atac: "+rs.getString("atac"), "Defense: "+rs.getString("defensa"));
                 }
             }
         } catch (SQLException e) {
@@ -87,14 +89,16 @@ public class UtilsSQLite {
     }
 
     public static void showPersonatgeByFaccio(Connection conn) throws SQLException {
-        String query = "Select p.nom , p.atac as , p.defensa, f.nom from Personatge p  join Faccio f on p.idFaccio = f.id order by f.nom ASC;";
+        String query = "Select f.nom as faccio , p.nom as personatge,p.atac  as atac, p.defensa as defense from Personatge p join Faccio f on f.id = p.idFaccio order by faccio;";
 
         try (Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query)) {
+                    System.out.printf("%-15s %-10s %-10s %-15s%n", "PERSONATGE", "ATAC", "DEFENSA", "FACCIO");
 
             while (rs.next()) {
-                System.out.println("Nom: " + rs.getString("nom") + ", Atac: "
-                        + rs.getDouble("atac") + ", Defensa: " + rs.getDouble("defensa") + ", Faccio: " + rs.getString("nom"));
+                
+                     
+                System.out.printf("%-15s %-10d %-10d %-15s%n", rs.getString("personatge"),rs.getInt("atac"),rs.getInt("defense"), rs.getString("faccio"));
             }
         } catch (SQLException e) {
             logger.error("Error al mostrar los datos: " + e.getMessage());
@@ -105,14 +109,13 @@ public class UtilsSQLite {
     }
 
     public static void showBestAtacant(Connection conn){
-        String query= "Select p.nom, p.atac ,f.nom from Persotge p join Faccio f on  p.idfaccio = f.id where  p.atac= (select max(atac) from Personatge);";
-
+        //String query= "Select p.nom as personatge, p.atac as atac ,f.nom as nomfaccio from Personatge p join Faccio f on  f.id = p.idFaccio  where  p.atac= (select max(atac) from Personatge);";
+        String query = "SELECT t.personatge,t.atac,t.nomfaccio FROM (SELECT p.nom AS personatge,p.atac AS atac, f.nom AS nomfaccio,  ROW_NUMBER() OVER (PARTITION BY p.idFaccio ORDER BY p.atac DESC) AS rn FROM Personatge p JOIN Faccio f ON f.id = p.idFaccio) AS t WHERE t.rn = 1;";
         try (Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query)) {
-
+                System.out.println(String.format("%-15s %-10s %-10s", "PERSONATGE", "ATAC", "FACCIO"));
             while (rs.next()) {
-                System.out.println("Nom: " + rs.getString("nom") + ", Atac: "
-                        + rs.getDouble("atac") + ", Faccio: " + rs.getString("nom"));
+                System.out.println(String.format("%-15s %-10d %-10s",rs.getString("personatge"),rs.getInt("atac"),rs.getString("nomfaccio")));
             }
         } catch (SQLException e) {
             logger.error("Error al mostrar los datos: " + e.getMessage());
@@ -122,13 +125,14 @@ public class UtilsSQLite {
     }
 
     public void showBestDefense(Connection conn){
-       String query= "Select p.nom, p.atac ,f.nom from Persotge p join Faccio f on  p.idfaccio = f.id where  p.atac= (select max(defensa) from Personatge);";
-       try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(query)) {
+        String query ="SELECT t.personatge,t.defensa,t.nomfaccio FROM (SELECT p.nom AS personatge,p.defensa AS defense, f.nom AS nomfaccio,  ROW_NUMBER() OVER (PARTITION BY p.idFaccio ORDER BY p.defensa DESC) AS rn FROM Personatge p JOIN Faccio f ON f.id = p.idFaccio) AS t WHERE t.rn = 1;";
+        System.out.println(String.format("%-15s %-10s %-10s", "PERSONATGE", "DEFENSA ", "FACCIO"));
 
-            while (rs.next()) {
-                System.out.println("Nom: " + rs.getString("nom") + ", Defensa: "
-                        + rs.getDouble("defensa") + ", Faccio: " + rs.getString("nom"));
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {        
+           while (rs.next()) {
+                System.out.println(String.format("%-15s %-10d %-10s", rs.getString("personatge"), rs.getInt("defense"),rs.getString("nomfaccio")));
+                
             }
         } catch (SQLException e) {
             logger.error("Error al mostrar los datos: " + e.getMessage());
